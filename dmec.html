@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Loi - DMEC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            padding: 20px;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container, .output-container {
+            width: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .form-container {
+            background-color: #f9f9f9;
+            border-right: 2px solid #ddd;
+        }
+        .output-container {
+            background-color: #fff;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            height: 150px;
+            resize: none;
+        }
+        #position-select {
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Giriş Formu -->
+        <div class="form-container">
+            <h2>Rütbe Seçimi</h2>
+            <select id="position-select" onchange="showForm()">
+                <option value="Forensic Attendant">Forensic Attendant</option>
+                <option value="Coroner Investigator">Coroner Investigator</option>
+                <option value="Medical Examiner">Medical Examiner</option>
+            </select>
+
+            <!-- Forensic Attendant Form -->
+            <div id="forensic-attendant-form" style="display:none;">
+                <h2>Forensic Attendant - Ölüm Soruşturma Raporu</h2>
+                <label for="fa-place-of-death">Ölüm Yeri:</label>
+                <input type="text" id="fa-place-of-death">
+
+                <label for="fa-department">Departman İsmi:</label>
+                <input type="text" id="fa-department">
+
+                <label for="fa-date-time">Tarih ve Saat:</label>
+                <input type="text" id="fa-date-time">
+
+                <label for="fa-coroner-name">Coroner İsmi:</label>
+                <input type="text" id="fa-coroner-name">
+
+                <label for="fa-badge-number">Rozet Numarası:</label>
+                <input type="text" id="fa-badge-number">
+
+                <label for="fa-deceased-name">Merhumun İsmi:</label>
+                <input type="text" id="fa-deceased-name">
+
+                <label for="fa-time-of-death">Ölüm Saati:</label>
+                <input type="text" id="fa-time-of-death">
+
+                <label for="fa-summary">ÖZET:</label>
+                <textarea id="fa-summary"></textarea>
+
+                <label for="fa-cause-of-death">Muhtemel Ölüm Nedeni:</label>
+                <input type="text" id="fa-cause-of-death">
+
+                <label for="fa-manner-of-death">Ölüm Şekli:</label>
+                <input type="text" id="fa-manner-of-death">
+
+                <label for="fa-imgur" aria-placeholder="Buraya sadece görsel linki (imgur)">Görseller:</label>
+                <input type="text" id="fa-imgur">
+
+                <label for="fa-details" >PK/CK:</label>
+                <input type="text" id="details">
+
+                <label for="fa-details2" aria-placeholder="Buraya sadece görsel linki (imgur)">cexamine,cdna,cdamages:</label>
+                <input type="text" id="details2">
+
+
+                <button onclick="generateForensicAttendantBBCode()">Generate BBCode</button>
+            </div>
+
+            <!-- Coroner Investigator Form -->
+            <div id="coroner-investigator-form" style="display:none;">
+                <h2>Coroner Investigator - Narrative</h2>
+                <label for="ci-info-sources">Bilgi Kaynakları:</label>
+                <textarea id="ci-info-sources"></textarea>
+
+                <label for="ci-investigation">Soruşturma:</label>
+                <textarea id="ci-investigation"></textarea>
+
+                <label for="ci-location">Lokasyon:</label>
+                <input type="text" id="ci-location">
+
+                <label for="ci-witness-statements">Bilgilendiricilerin/Tanıkların İfadeleri:</label>
+                <textarea id="ci-witness-statements"></textarea>
+
+                <label for="ci-scene-description">Olay Yeri Betimlemesi:</label>
+                <textarea id="ci-scene-description"></textarea>
+
+                <label for="ci-evidence">Deliller:</label>
+                <textarea id="ci-evidence"></textarea>
+
+                <label for="ci-body-description">Beden Betimlemesi:</label>
+                <textarea id="ci-body-description"></textarea>
+
+                <label for="ci-identification">Kimlik Tespiti:</label>
+                <textarea id="ci-identification"></textarea>
+
+                <label for="ci-next-of-kin">En Yakın Akraba Bildirisi:</label>
+                <textarea id="ci-next-of-kin"></textarea>
+
+                <label for="ci-rank-name">Rütbe ve İsim:</label>
+                <input type="text" id="ci-rank-name">
+
+                <button onclick="generateCoronerInvestigatorBBCode()">Generate BBCode</button>
+            </div>
+
+            <!-- Medical Examiner Form -->
+            <div id="medical-examiner-form" style="display:none;">
+                <h2>Medical Examiner - Otopsi Formu</h2>
+                <label for="me-name">Ad ve Soyad:</label>
+                <input type="text" id="me-name">
+
+                <label for="me-age">Yaş:</label>
+                <input type="text" id="me-age">
+
+                <label for="me-gender">Cinsiyet:</label>
+                <input type="text" id="me-gender">
+
+                <label for="me-ethnicity">Etnik Köken:</label>
+                <input type="text" id="me-ethnicity">
+
+                <label for="me-place-of-death">Ölüm Yeri:</label>
+                <input type="text" id="me-place-of-death">
+
+                <label for="me-date-time-of-death">Ölüm Tarihi/Saati:</label>
+                <input type="text" id="me-date-time-of-death">
+
+                <label for="me-external-examination">Dış Muayene:</label>
+                <textarea id="me-external-examination"></textarea>
+
+                <label for="me-head-examination">Baş Muayenesi:</label>
+                <textarea id="me-head-examination"></textarea>
+
+                <label for="me-mouth-neck-examination">Ağız-Boğaz-Boyun Muayenesi:</label>
+                <textarea id="me-mouth-neck-examination"></textarea>
+
+                <label for="me-chest-examination">Göğüs Muayenesi:</label>
+                <textarea id="me-chest-examination"></textarea>
+
+                <label for="me-abdominal-examination">Batın Muayenesi:</label>
+                <textarea id="me-abdominal-examination"></textarea>
+
+                <label for="me-autopsy-witnesses">Otopsi Tanıkları:</label>
+                <textarea id="me-autopsy-witnesses"></textarea>
+
+                <label for="me-conclusion">Sonuç ve Görüş:</label>
+                <textarea id="me-conclusion"></textarea>
+
+
+                <button onclick="generateMedicalExaminerBBCode()">Generate BBCode</button>
+            </div>
+        </div>
+
+        <!-- BBCode Çıktısı -->
+        <div class="output-container">
+            <h2>Oluşturulmuş BBCode</h2>
+            <textarea id="bbcode-output" readonly></textarea>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
