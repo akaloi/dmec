@@ -1,40 +1,176 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Loi - DMEC</title>
+    <title>DMEC - Bilgisayar</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            padding: 20px;
+        * {
             margin: 0;
-            background-color: #f0f0f0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            display: flex;
-            max-width: 1200px;
+        body, html {
             width: 100%;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('https://i.imgur.com/VeeSox1.png') no-repeat center center fixed;
+            background-size: cover;
         }
-        .form-container, .output-container {
+        .desktop {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+        .start-button {
+            width: 40px;
+            height: 40px;
+            background: url('https://i.imgur.com/VZdQXFI.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        .search-bar {
+          flex: 1;
+          margin: 0 10px;
+          display: flex;
+          align-items: right;
+          height: 100%; 
+        }
+
+        .search-bar input {
+            width: 100%;
+            height: 25px;
+            padding: 0 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .search-bar input::placeholder {
+            color: white;
+            opacity: 0.7;
+        }
+        .taskbar-icons {
+            display: flex;
+            align-items: center;
+        }
+        .taskbar-icons img {
+            width: 30px;
+            height: 30px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .clock {
+            font-size: 14px;
+            color: white;
+        }
+        .desktop-icons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon {
+            width: 60px;
+            height: 60px;
+            margin: 10px 0;
+            background: url('https://i.imgur.com/v8Ue7Wb.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        .icon-label {
+            text-align: center;
+            color: white;
+            margin-top: 5px;
+        }
+        .notification-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .notification-area img {
+            width: 18px;
+            height: 18px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        /* Komut penceresi stili */
+        .command-window {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            width: 90%;
+            height: 90%;
+            background-color: #ffffff;
+            border: 2px solid #000;
+            display: none;
+            z-index: 100;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .command-window .window-header {
+            background-color: #007bff;
+            padding: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .command-window .window-body {
+            display: flex;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+        }
+        .command-window .close-btn {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        /* Sol tarafta form elemanları */
+        .form-container {
             width: 50%;
             padding: 20px;
-            box-sizing: border-box;
-            height: 100%;
-            overflow-y: auto;
-        }
-        .form-container {
             background-color: #f9f9f9;
             border-right: 2px solid #ddd;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
+        /* Sağ tarafta çıktı kısmı */
         .output-container {
+            width: 50%;
+            padding: 20px;
             background-color: #fff;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         h2 {
             text-align: center;
@@ -74,153 +210,419 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Giriş Formu -->
-        <div class="form-container">
-            <h2>Rütbe Seçimi</h2>
-            <select id="position-select" onchange="showForm()">
-                <option value="Statu">Mevcut Statünüzü Seçin</option>
-                <option value="Forensic Attendant">Forensic Attendant</option>
-                <option value="Coroner Investigator">Coroner Investigator</option>
-                <option value="Medical Examiner">Medical Examiner</option>
-            </select>
+    <div class="desktop">
+        <!-- Desktop icons -->
+        <div class="desktop-icons">
+            <div class="icon" onclick="openCommandWindow()"></div>
+            <div class="icon-label">DMEC - Rapor</div>
+        </div>
 
-            <!-- Forensic Attendant Form -->
-            <div id="forensic-attendant-form" style="display:none;">
-                <h2>Forensic Attendant - Ölüm Soruşturma Raporu</h2>
-                <label for="fa-place-of-death">Ölüm Yeri:</label>
-                <input type="text" id="fa-place-of-death">
-
-                <label for="fa-department">Departman İsmi:</label>
-                <input type="text" id="fa-department">
-
-                <label for="fa-date-time">Tarih ve Saat:</label>
-                <input type="text" id="fa-date-time">
-
-                <label for="fa-coroner-name">Coroner İsmi:</label>
-                <input type="text" id="fa-coroner-name">
-
-                <label for="fa-badge-number">Rozet Numarası:</label>
-                <input type="text" id="fa-badge-number">
-
-                <label for="fa-deceased-name">Merhumun İsmi:</label>
-                <input type="text" id="fa-deceased-name">
-
-                <label for="fa-time-of-death">Ölüm Saati:</label>
-                <input type="text" id="fa-time-of-death">
-
-                <label for="fa-summary">ÖZET:</label>
-                <textarea id="fa-summary"></textarea>
-
-                <label for="fa-cause-of-death">Muhtemel Ölüm Nedeni:</label>
-                <input type="text" id="fa-cause-of-death">
-
-                <label for="fa-manner-of-death">Ölüm Şekli:</label>
-                <input type="text" id="fa-manner-of-death">
-
-                <label for="fa-imgur" aria-placeholder="Buraya sadece görsel linki (imgur)">Görseller:</label>
-                <input type="text" id="fa-imgur">
-
-                <label for="fa-details" >PK/CK:</label>
-                <input type="text" id="details">
-
-                <label for="fa-details2" aria-placeholder="Buraya sadece görsel linki (imgur)">cexamine,cdna,cdamages:</label>
-                <input type="text" id="details2">
-
-
-                <button onclick="generateForensicAttendantBBCode()">BBCode Oluştur</button>
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div class="start-button"></div>
+            <div class="search-bar">
+                <input type="text" placeholder="Ara">
             </div>
-
-            <!-- Coroner Investigator Form -->
-            <div id="coroner-investigator-form" style="display:none;">
-                <h2>Coroner Investigator - Narrative</h2>
-                <label for="ci-info-sources">Bilgi Kaynakları:</label>
-                <textarea id="ci-info-sources"></textarea>
-
-                <label for="ci-investigation">Soruşturma:</label>
-                <textarea id="ci-investigation"></textarea>
-
-                <label for="ci-location">Lokasyon:</label>
-                <input type="text" id="ci-location">
-
-                <label for="ci-witness-statements">Bilgilendiricilerin/Tanıkların İfadeleri:</label>
-                <textarea id="ci-witness-statements"></textarea>
-
-                <label for="ci-scene-description">Olay Yeri Betimlemesi:</label>
-                <textarea id="ci-scene-description"></textarea>
-
-                <label for="ci-evidence">Deliller:</label>
-                <textarea id="ci-evidence"></textarea>
-
-                <label for="ci-body-description">Beden Betimlemesi:</label>
-                <textarea id="ci-body-description"></textarea>
-
-                <label for="ci-identification">Kimlik Tespiti:</label>
-                <textarea id="ci-identification"></textarea>
-
-                <label for="ci-next-of-kin">En Yakın Akraba Bildirisi:</label>
-                <textarea id="ci-next-of-kin"></textarea>
-
-                <label for="ci-rank-name">Rütbe ve İsim:</label>
-                <input type="text" id="ci-rank-name">
-
-                <button onclick="generateCoronerInvestigatorBBCode()">BBCode Oluştur</button>
+            <div class="taskbar-icons">
+                <img src="https://i.imgur.com/akV0tQM.png" alt="Explorer">
+                <img src="https://i.imgur.com/X4XGkNh.png" alt="App">
+                <img src="https://i.imgur.com/t3p9flc.png" alt="Custom App">
+                <img src="https://i.imgur.com/ekQX1RZ.png" alt="Another Custom App">
             </div>
-
-            <!-- Medical Examiner Form -->
-            <div id="medical-examiner-form" style="display:none;">
-                <h2>Medical Examiner - Otopsi Formu</h2>
-                <label for="me-name">Ad ve Soyad:</label>
-                <input type="text" id="me-name">
-
-                <label for="me-age">Yaş:</label>
-                <input type="text" id="me-age">
-
-                <label for="me-gender">Cinsiyet:</label>
-                <input type="text" id="me-gender">
-
-                <label for="me-ethnicity">Etnik Köken:</label>
-                <input type="text" id="me-ethnicity">
-
-                <label for="me-place-of-death">Ölüm Yeri:</label>
-                <input type="text" id="me-place-of-death">
-
-                <label for="me-date-time-of-death">Ölüm Tarihi/Saati:</label>
-                <input type="text" id="me-date-time-of-death">
-
-                <label for="me-external-examination">Dış Muayene:</label>
-                <textarea id="me-external-examination"></textarea>
-
-                <label for="me-head-examination">Baş Muayenesi:</label>
-                <textarea id="me-head-examination"></textarea>
-
-                <label for="me-mouth-neck-examination">Ağız-Boğaz-Boyun Muayenesi:</label>
-                <textarea id="me-mouth-neck-examination"></textarea>
-
-                <label for="me-chest-examination">Göğüs Muayenesi:</label>
-                <textarea id="me-chest-examination"></textarea>
-
-                <label for="me-abdominal-examination">Batın Muayenesi:</label>
-                <textarea id="me-abdominal-examination"></textarea>
-
-                <label for="me-autopsy-witnesses">Otopsi Tanıkları:</label>
-                <textarea id="me-autopsy-witnesses"></textarea>
-
-                <label for="me-conclusion">Sonuç ve Görüş:</label>
-                <textarea id="me-conclusion"></textarea>
-
-
-                <button onclick="generateMedicalExaminerBBCode()">BBCode Oluştur</button>
+            <div class="notification-area">
+                <img src="https://i.imgur.com/N17fUpo.png" alt="Notification Icon">
+                <img src="https://i.imgur.com/8Z3faH2.png" alt="Volume Icon">
+                <img src="https://i.imgur.com/cg6Z0c4.png" alt="Network Icon">
+                <div class="clock" id="clock"></div>
             </div>
         </div>
 
-        <!-- BBCode Çıktısı -->
-        <div class="output-container">
-            <h2>Oluşturulmuş BBCode</h2>
-            <textarea id="bbcode-output" readonly></textarea>
+        <!-- Komut penceresi -->
+        <div class="command-window" id="command-window">
+            <div class="window-header">
+                DMEC - Rapor  
+                <span class="close-btn" onclick="closeCommandWindow()">x</span>
+            </div>
+            <div class="window-body">
+                <!-- Sol tarafta form elemanları -->
+                <div class="form-container">
+                    <h2>Rütbe Seçimi</h2>
+                    <select id="position-select" onchange="showForm()">
+                        <option value="Şablon Seçiniz">Şablon Seçiniz</option>
+                        <option value="Forensic Attendant">Ölüm Soruşturma Raporu</option>
+                        <option value="Coroner Investigator">Coroner Investigator - Narrative </option>
+                        <option value="Medical Examiner">Otopsi Raporu</option>
+                    </select>
+
+                    <!-- Forensic Attendant Form -->
+                    <div id="forensic-attendant-form" style="display:none;">
+                        <h2>Forensic Attendant - Ölüm Soruşturma Raporu</h2>
+                        <label for="fa-place-of-death">Ölüm Yeri:</label>
+                        <input type="text" id="fa-place-of-death">
+
+                        <label for="fa-department">Departman İsmi:</label>
+                        <input type="text" id="fa-department">
+
+                        <label for="fa-date-time">Tarih ve Saat:</label>
+                        <input type="text" id="fa-date-time">
+
+                        <label for="fa-coroner-name">Coroner İsmi:</label>
+                        <input type="text" id="fa-coroner-name">
+
+                        <label for="fa-badge-number">Rozet Numarası:</label>
+                        <input type="text" id="fa-badge-number">
+
+                        <label for="fa-deceased-name">Merhumun İsmi:</label>
+                        <input type="text" id="fa-deceased-name">
+
+                        <label for="fa-time-of-death">Ölüm Saati:</label>
+                        <input type="text" id="fa-time-of-death">
+
+                        <label for="fa-summary">ÖZET:</label>
+                        <textarea id="fa-summary"></textarea>
+
+                        <label for="fa-cause-of-death">Muhtemel Ölüm Nedeni:</label>
+                        <input type="text" id="fa-cause-of-death">
+
+                        <label for="fa-manner-of-death">Ölüm Şekli:</label>
+                        <input type="text" id="fa-manner-of-death">
+
+                        <label for="fa-imgur">Görseller:</label>
+                        <input type="text" id="fa-imgur">
+
+                        <label for="fa-details">PK/CK:</label>
+                        <input type="text" id="details">
+
+                        <label for="fa-details2">cexamine,cdna,cdamages:</label>
+                        <input type="text" id="details2">
+
+                        <button onclick="generateForensicAttendantBBCode()">Generate BBCode</button>
+                    </div>
+
+                    <!-- Coroner Investigator Form -->
+                    <div id="coroner-investigator-form" style="display:none;">
+                        <h2>Coroner Investigator - Narrative</h2>
+                        <label for="ci-info-sources">Bilgi Kaynakları:</label>
+                        <textarea id="ci-info-sources"></textarea>
+
+                        <label for="ci-investigation">Soruşturma:</label>
+                        <textarea id="ci-investigation"></textarea>
+
+                        <label for="ci-location">Lokasyon:</label>
+                        <input type="text" id="ci-location">
+
+                        <label for="ci-witness-statements">Bilgilendiricilerin/Tanıkların İfadeleri:</label>
+                        <textarea id="ci-witness-statements"></textarea>
+
+                        <label for="ci-scene-description">Olay Yeri Betimlemesi:</label>
+                        <textarea id="ci-scene-description"></textarea>
+
+                        <label for="ci-evidence">Deliller:</label>
+                        <textarea id="ci-evidence"></textarea>
+
+                        <label for="ci-body-description">Beden Betimlemesi:</label>
+                        <textarea id="ci-body-description"></textarea>
+
+                        <label for="ci-identification">Kimlik Tespiti:</label>
+                        <textarea id="ci-identification"></textarea>
+
+                        <label for="ci-next-of-kin">En Yakın Akraba Bildirisi:</label>
+                        <textarea id="ci-next-of-kin"></textarea>
+
+                        <label for="ci-rank-name">Rütbe ve İsim:</label>
+                        <input type="text" id="ci-rank-name">
+
+                        <button onclick="generateCoronerInvestigatorBBCode()">Generate BBCode</button>
+                    </div>
+
+                    <!-- Medical Examiner Form -->
+                    <div id="medical-examiner-form" style="display:none;">
+                        <h2>Medical Examiner - Otopsi Formu</h2>
+                        <label for="me-name">Ad ve Soyad:</label>
+                        <input type="text" id="me-name">
+
+                        <label for="me-age">Yaş:</label>
+                        <input type="text" id="me-age">
+
+                        <label for="me-gender">Cinsiyet:</label>
+                        <input type="text" id="me-gender">
+
+                        <label for="me-ethnicity">Etnik Köken:</label>
+                        <input type="text" id="me-ethnicity">
+
+                        <label for="me-place-of-death">Ölüm Yeri:</label>
+                        <input type="text" id="me-place-of-death">
+
+                        <label for="me-date-time-of-death">Ölüm Tarihi/Saati:</label>
+                        <input type="text" id="me-date-time-of-death">
+
+                        <label for="me-external-examination">Dış Muayene:</label>
+                        <textarea id="me-external-examination"></textarea>
+
+                        <label for="me-head-examination">Baş Muayenesi:</label>
+                        <textarea id="me-head-examination"></textarea>
+
+                        <label for="me-mouth-neck-examination">Ağız-Boğaz-Boyun Muayenesi:</label>
+                        <textarea id="me-mouth-neck-examination"></textarea>
+
+                        <label for="me-chest-examination">Göğüs Muayenesi:</label>
+                        <textarea id="me-chest-examination"></textarea>
+
+                        <label for="me-abdominal-examination">Batın Muayenesi:</label>
+                        <textarea id="me-abdominal-examination"></textarea>
+
+                        <label for="me-autopsy-witnesses">Otopsi Tanıkları:</label>
+                        <textarea id="me-autopsy-witnesses"></textarea>
+
+                        <label for="me-conclusion">Sonuç ve Görüş:</label>
+                        <textarea id="me-conclusion"></textarea>
+
+                        <button onclick="generateMedicalExaminerBBCode()">Generate BBCode</button>
+                    </div>
+                </div>
+
+                <!-- Sağ tarafta çıktı kısmı -->
+                <div class="output-container">
+                    <h2>Oluşturulmuş BBCode</h2>
+                    <textarea id="bbcode-output" readonly></textarea>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+            var seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = hours + ':' + minutes + ':' + seconds;
+        }
+
+        function openCommandWindow() {
+            document.getElementById('command-window').style.display = 'block';
+        }
+
+        function closeCommandWindow() {
+            document.getElementById('command-window').style.display = 'none';
+        }
+
+        // Pozisyon seçimine göre form gösterimi
+        function showForm() {
+            const position = document.getElementById('position-select').value;
+
+            // Tüm formları gizle
+            document.getElementById('forensic-attendant-form').style.display = 'none';
+            document.getElementById('coroner-investigator-form').style.display = 'none';
+            document.getElementById('medical-examiner-form').style.display = 'none';
+
+            // Seçilen pozisyona göre doğru formu göster
+            if (position === 'Forensic Attendant') {
+                document.getElementById('forensic-attendant-form').style.display = 'block';
+            } else if (position === 'Coroner Investigator') {
+                document.getElementById('coroner-investigator-form').style.display = 'block';
+            } else if (position === 'Medical Examiner') {
+                document.getElementById('medical-examiner-form').style.display = 'block';
+            }
+        }
+
+        // Forensic Attendant BBCode oluşturma
+        function generateForensicAttendantBBCode() {
+            const placeOfDeath = document.getElementById('fa-place-of-death').value;
+            const department = document.getElementById('fa-department').value;
+            const dateTime = document.getElementById('fa-date-time').value;
+            const coronerName = document.getElementById('fa-coroner-name').value;
+            const badgeNumber = document.getElementById('fa-badge-number').value;
+            const deceasedName = document.getElementById('fa-deceased-name').value;
+            const timeOfDeath = document.getElementById('fa-time-of-death').value;
+            const summary = document.getElementById('fa-summary').value;
+            const causeOfDeath = document.getElementById('fa-cause-of-death').value;
+            const mannerOfDeath = document.getElementById('fa-manner-of-death').value;
+            const fimgur = document.getElementById('fa-imgur').value;
+            const fck = document.getElementById('details').value;
+            const fck2 = document.getElementById('details2').value;
+
+            const bbcode = `
+[divbox=white][imgsize=150,150]https://i.imgur.com/jN2vZuO.png[/imgsize]
+[aligntable=right,0,000,0,0,0,transparent][size=90]OPERATIONS DIVISION
+DECEDENT SERVICES
+[hr][/hr]
+[/aligntable]
+
+[center] ÖLÜM SORUŞTURMA RAPORU[/center]
+[hr][/hr]
+
+[center][b]A. YAZILI RAPOR[/b][/center]
+
+[list=none][color=transparent]spacer[/color]
+County Coroner's Office meydana gelen ölümle alakalı olarak [b]${placeOfDeath}[/b] konumuna çağrıldı. [b]${department}[/b] tarafından gelen çağrı üzerine Coroner's Office bir Forensic Attendant'ı [b]${dateTime}[/b] tarihinde olay yerinde soruşturma ve inceleme yapmak için gönderdi.
+
+Forensic Attendant, [b]${coronerName}[/b], Rozet Numarası [b]${badgeNumber}[/b], olay yerine gelerek şahsın kimliğini tespit etti[b] ${deceasedName}[/b] adlı şahsın [b]${timeOfDeath}[/b] saatinde öldüğü açıklandı. İlk soruşturmanın ardından, Forensic Attendant bu özeti ortaya çıkardı [b]ÖZET[/b]: ${summary}
+
+Olay yeri incelemesinden elde edilen bilgilere ve merhumun tıbbi geçmişine (varsa) dayanarak olası ölüm nedeninin [b]${causeOfDeath}[/b] olduğu belirlendi. Ölüm şekli [b]${mannerOfDeath}[/b] olarak sınıflandırıldı.[/list]
+
+[list=none][color=transparent]spacer[/color][center][b]B. FOTOĞRAFLI BELGE KAYDI[/b][/center]
+
+[spoiler=OLAY YERİ FOTOĞRAFLARI]
+${fimgur}[/spoiler]
+
+[divbox=transparent][center][color=Black][size=85][b][u](( OUT OF CHARACTER ))[/u][/b][/size][/center][/color][hr][/hr]
+[size=75] Bu bölüm, oyuncunun CK mı yoksa PK mı olduğunu açıklığa kavuşturur.
+Bu vakada oyuncu; ${fck}
+[morgue screen, cinjuries, cdna linkleri: ${fck2}][/size][/divbox]
+
+[center][b]C. BEYAN[/b][/center]
+
+[divbox=transparent][center][color=Black][size=85]Bir Forensic Attendant olarak bulgularım ve sonuçlarımla ilgili ayrıntılı notlar aldım ve bu notlar gerektiğinde incelenmeye hazırdır. Ancak şunu belirtmeliyim ki, bu notlar herhangi bir kişisel görüş içermemektedir ve yalnızca elimde bulunan kanıt ve gerçeklere dayanmaktadır.
+
+Sonuç olarak, bu raporun ajansın gerekli eylemlerde ilerlemesi için gerekli bilgileri sağlayacağını umuyorum. Daha fazla bilgiye ihtiyaç duyarsanız veya size daha fazla yardımcı olabilirsem lütfen bana bildirin.
+
+Bu raporda yer alan bilgilerin bilgim ve inancım dahilinde doğru ve gerçek olduğunu onaylarım. Raporu inceledim ve içerdiği tüm bilgilerin tam ve doğru olduğundan emin oldum. [/size][/divbox]
+
+[center][b]GİZLİLİK VE MAHREMİYET[/b][/center]
+
+[divbox=transparent][center][color=Black][size=85]Department of Medical Examiner-Coroner'den alınan bu belge, içinde yer alan bilgilerin gerçekliğini tasdik eder. Bu bilgilerin izinsiz dağıtımı veya kullanımı, Sağlık Sigortası Taşınabilirlik ve Sorumluluk Yasası'nın (HIPAA) yanı sıra San Andreas Tıbbi Bilgilerin Gizliliği Yasası (CMIA) ve San Andreas Bilgi Uygulamaları Yasası (IPA) dahil ancak bunlarla sınırlı olmamak üzere eyalet ve federal gizlilik yasalarını ihlal eder. Bu belgeyi ele alan tüm tarafların merhumun ve ailesinin mahremiyetine ve gizliliğine saygı duyması zorunludur. Bu yasaların herhangi bir şekilde ihlali, sorumlu taraflara karşı yasal işlem başlatılmasıyla sonuçlanabilir. Ek bilgi veya açıklamaya ihtiyaç duyulursa lütfen Department of Medical Examiner-Coroner ile iletişime geçin.[/size][/divbox]`;
+
+            document.getElementById('bbcode-output').value = bbcode.trim();
+        }
+
+        // Coroner Investigator BBCode oluşturma
+        function generateCoronerInvestigatorBBCode() {
+            const infoSources = document.getElementById('ci-info-sources').value;
+            const investigation = document.getElementById('ci-investigation').value;
+            const location = document.getElementById('ci-location').value;
+            const witnessStatements = document.getElementById('ci-witness-statements').value;
+            const sceneDescription = document.getElementById('ci-scene-description').value;
+            const evidence = document.getElementById('ci-evidence').value;
+            const bodyDescription = document.getElementById('ci-body-description').value;
+            const identification = document.getElementById('ci-identification').value;
+            const nextOfKin = document.getElementById('ci-next-of-kin').value;
+            const rankName = document.getElementById('ci-rank-name').value;
+
+            const bbcode = `
+[divbox=white][imgsize=170,170]https://i.imgur.com/CM9iDX4.png[/imgsize]
+[aligntable=right,0,000,0,0,0,transparent][size=90]L.S. COUNTY DEPARTMENT OF MEDICAL EXAMINER-CORONER
+DEATH INVESTIGATIONS UNIT
+[hr][/hr]
+[/aligntable]
+
+[center] [b]CORONER INVESTIGATOR'S NARRATIVE[/b][/center]
+[hr][/hr]
+
+[b]Bilgi Kaynakları:[/b]
+${infoSources}
+
+[b]Soruşturma:[/b]
+${investigation}
+
+[b]Lokasyon:[/b]
+${location}
+
+[b]Bilgilendiricilerin/Tanıkların İfadeleri:[/b]
+${witnessStatements}
+
+[b]Olay Yeri Betimlemesi:[/b]
+${sceneDescription}
+
+[b]Deliller:[/b]
+${evidence}
+
+[b]Beden Betimlemesi:[/b]
+${bodyDescription}
+
+[b]Kimlik Tespiti:[/b]
+${identification}
+
+[b]En Yakın Akraba Bildirisi:[/b]
+${nextOfKin}
+
+
+${rankName}
+
+[hr][/hr]
+[center][b]GİZLİLİK VE MAHREMİYET[/b][/center]
+
+[divbox=transparent][center][color=Black][size=85]Department of Medical Examiner-Coroner'den alınan bu belge, içinde yer alan bilgilerin gerçekliğini tasdik eder. Bu bilgilerin izinsiz dağıtımı veya kullanımı, Sağlık Sigortası Taşınabilirlik ve Sorumluluk Yasası'nın (HIPAA) yanı sıra San Andreas Tıbbi Bilgilerin Gizliliği Yasası (CMIA) ve San Andreas Bilgi Uygulamaları Yasası (IPA) dahil ancak bunlarla sınırlı olmamak üzere eyalet ve federal gizlilik yasalarını ihlal eder. Bu belgeyi ele alan tüm tarafların merhumun ve ailesinin mahremiyetine ve gizliliğine saygı duyması zorunludur. Bu yasaların herhangi bir şekilde ihlali, sorumlu taraflara karşı yasal işlem başlatılmasıyla sonuçlanabilir. Ek bilgi veya açıklamaya ihtiyaç duyulursa lütfen Department of Medical Examiner-Coroner ile iletişime geçin.[/size][/divbox]`;
+
+            document.getElementById('bbcode-output').value = bbcode.trim();
+        }
+
+        // Medical Examiner BBCode oluşturma
+        function generateMedicalExaminerBBCode() {
+            const mname = document.getElementById('me-name').value;
+            const mage = document.getElementById('me-age').value;
+            const mgender = document.getElementById('me-gender').value;
+            const methnicity = document.getElementById('me-ethnicity').value;
+            const mdeath = document.getElementById('me-place-of-death').value;
+            const mtime = document.getElementById('me-date-time-of-death').value;
+            const mdis = document.getElementById('me-external-examination').value;
+            const mhead = document.getElementById('me-head-examination').value;
+            const magiz = document.getElementById('me-mouth-neck-examination').value;
+            const mgovde = document.getElementById('me-chest-examination').value;
+            const mabdo = document.getElementById('me-abdominal-examination').value;
+            const mtanik = document.getElementById('me-autopsy-witnesses').value;
+            const mgors = document.getElementById('me-conclusion').value;
+
+            const bbcode = `
+[divbox=white][imgsize=150,150]https://i.imgur.com/jN2vZuO.png[/imgsize]
+[aligntable=right,0,000,0,0,0,transparent][size=90]FORENSIC MEDICINE DIVISION
+DEATH INVESTIGATION UNIT
+[hr][/hr]
+[/aligntable]
+
+[center] OTOPSİ RAPORU[/center]
+[hr][/hr]
+
+[center][b]A. MERHUM BİLGİLERİ[/b][/center]
+
+[b]Ad ve Soyad:[/b] ${mname}
+[b]Yaş:[/b] ${mage}
+[b]Cinsiyet:[/b] ${mgender}
+[b]Etnik Köken:[/b] ${methnicity}
+[b]Ölüm Yeri:[/b] ${mdeath}
+[b]Ölüm Tarihi/Saati:[/b] ${mtime}
+
+[hr][/hr]
+[color=transparent]spacer[/color][center][b]B. OTOPSİ SEYRİ[/b][/center]
+
+[b]Dış Muayene:[/b]
+${mdis}
+
+[b]Baş Muayenesi:[/b]
+${mhead}
+
+[b]Ağız-Boğaz-Boyun Muayenesi:[/b]
+${magiz}
+
+[b]Göğüs Muayenesi:[/b]
+${mgovde}
+
+[b]Batın Muayenesi:[/b]
+${mabdo}
+
+[b]Otopsi Tanıkları:[/b]
+${mtanik}
+
+[hr][/hr]
+
+[center][b]C. SONUÇ VE GÖRÜŞ[/b][/center]
+${mgors}
+
+[hr][/hr]
+[center][b]D. GİZLİLİK VE MAHREMİYET[/b][/center]
+
+[divbox=transparent][center][color=Black][size=85]Department of Medical Examiner-Coroner'den alınan bu belge, içinde yer alan bilgilerin gerçekliğini tasdik eder. Bu bilgilerin izinsiz dağıtımı veya kullanımı, Sağlık Sigortası Taşınabilirlik ve Sorumluluk Yasası'nın (HIPAA) yanı sıra San Andreas Tıbbi Bilgilerin Gizliliği Yasası (CMIA) ve San Andreas Tıbbi Bilgilerin Gizliliği Yasası (CMIA) dahil ancak bunlarla sınırlı olmamak üzere eyalet ve federal gizlilik yasalarını ihlal eder. San Andreas Bilgi Uygulamaları Yasası (IPA).
+
+Bu belgeyi ele alan tüm tarafların merhumun ve ailesinin mahremiyetine ve gizliliğine saygı duyması zorunludur. Bu yasaların herhangi bir şekilde ihlali, sorumlu taraflara karşı yasal işlem başlatılmasıyla sonuçlanabilir.
+
+Ek bilgi veya açıklamaya ihtiyaç duyulursa lütfen Department of Medical Examiner-Coroner ile iletişime geçin.[/size][/divbox]
+`;
+
+            document.getElementById('bbcode-output').value = bbcode.trim();
+        }
+
+        setInterval(updateClock, 1000); // Update clock every second
+        updateClock(); // Initial call to display clock immediately
+    </script>
 </body>
 </html>
