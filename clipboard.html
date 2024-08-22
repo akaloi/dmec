@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coroner Investigator's Narrative Report</title>
+    <link rel="icon" href="https://imgur.com/61fuXl6.png" type="image/png">
+
+    <style>
+        /* General Styles */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #e8e8e8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* A4 Container Styles */
+        .a4-container {
+            width: 210mm;
+            height: 297mm;
+            padding: 20mm;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10mm;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        /* Show the current page */
+        .a4-container.active {
+            display: flex;
+        }
+
+        /* Header Styles */
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 210mm;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #333;
+        }
+        .header h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            color: #555;
+            font-weight: normal;
+        }
+
+        /* Content Styles */
+        .content {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        /* Button Style */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Page Navigation */
+        .page-nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .page-nav a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .page-nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Page 1 -->
+    <div class="a4-container active" id="page1">
+        <div class="header">
+            <img src="https://i.imgur.com/5K6R5rU.png" alt="DMEC Logo">
+        </div>
+
+        <div class="content">
+            <h2>Report Details</h2>
+            <label for="ci-info-sources">Bilgi Kaynakları:</label>
+            <textarea id="ci-info-sources" placeholder="Bu kısımda soruşturmanızı yürütürken yararlandığınız bilgi kaynaklarını açıklamanız gerekmektedir."></textarea>
+
+            <label for="ci-investigation">Soruşturma:</label>
+            <textarea id="ci-investigation" placeholder="Bu kısımda soruşturmayı yürütürken soruşturmanın en başından en sonuna kadar yaptığınız her şeyi adım adım, paragraf olacak şekilde açıklamanız gerekiyor. Yapacağınız her farklı bir eylem için yeni bir paragraf oluşturmanız gerekmektedir. Yaptığınız soruşturma süresinde neyi ve nerede yaptığınız saat, tarih gibi detaylarla birlikte verilmelidir."></textarea>
+
+            <label for="ci-location">Lokasyon:</label>
+            <input type="text" placeholder="Bu kısımda olayın nerede olduğu, lokasyonu hakkında bilgi vermeniz gerekmektedir." id="ci-location">
+
+            <label for="ci-witness-statements">Bilgilendiricilerin/Tanıkların İfadeleri:</label>
+            <textarea id="ci-witness-statements" placeholder="Bu kısımda bilgi kaynaklarından ayrı olarak investigator başvurduğu bilgi kaynaklarından aldığı bilgileri buraya yazmak zorundadır."></textarea>
+
+            <label for="ci-scene-description">Olay Yeri Betimlemesi:</label>
+            <textarea id="ci-scene-description" placeholder="Bu kısım investigatorun olay yerine vardığı zaman itibarıyla gördüğü olay yerinin ilk halinin ne şekilde olduğunun detaylı olarak betimlenmesi, anlatılmasının yazılmasının gerekli olduğu kısımdır."></textarea>
+        </div>
+
+        <div class="page-nav">
+            <a onclick="showPage('page2')">2. Sayfaya Geç</a>
+        </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="a4-container" id="page2">
+        <div class="header">
+            <img src="https://i.imgur.com/BxASkLy.png" alt="DMEC Logo">
+        </div>
+
+        <div class="content">
+            <label for="ci-evidence">Deliller:</label>
+            <textarea id="ci-evidence" placeholder="Bu kısımda maktulün üzerinden çıkan veya maktulün yakın çevresinde, ona ait olabileceğini düşündüğünüz ve işleme koyduğunuz / koyacağınız delilleri yazmanız gerekmektedir."></textarea>
+
+            <label for="ci-body-description">Beden Betimlemesi:</label>
+            <textarea id="ci-body-description" placeholder="Bu kısımda maktulün bedenine bakıldığında dışarıdan nasıl göründüğünü yazmanız gerekmektedir."></textarea>
+
+            <label for="ci-identification">Kimlik Tespiti:</label>
+            <textarea id="ci-identification" placeholder="Eğer ki maktulün üzerinden maktulün kim olduğunu tanımlayacak bir bilgiye sahip olursanız burada maktulün kimliğini yazmanız gerekmektedir. Eğer ki maktulün kimliği bilinmiyorsa doğrudan 'Bilinmiyor' yazılmalıdır."></textarea>
+
+            <label for="ci-next-of-kin">En Yakın Akraba Bildirisi:</label>
+            <textarea id="ci-next-of-kin" placeholder="Maktulün kimliğine ulaştıktan sonra maktulün en yakın akrabasına bildiri yapılması gerekmektedir. Bu kısım bu detayları içerir."></textarea>
+
+            <label for="ci-rank-name">Rütbe ve İsim:</label>
+            <input type="text" id="ci-rank-name" placeholder="Personelin Rütbesi ve İsmi - bkz: Coroner Investigator John Doe">
+
+            <button onclick="generateCoronerInvestigatorBBCode()">Generate BBCode</button>
+
+            <div class="output-container">
+                <h2>Oluşturulmuş BBCode</h2>
+                <textarea id="bbcode-output" placeholder="Bu kısım BBCode Oluştur butonuna tıkladığınız zaman otomatik olarak karşınıza şablonun güncel hali çıkacaktır. BBCode otomatik olarak kopyalanacaktır. Dolayısıyla özellikle doğrudan bu kısımdan herhangi bir kopyalama işlemi yapmanıza gerek yoktur." readonly></textarea>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <a onclick="showPage('page1')">1. Sayfaya Geri Dön</a>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.a4-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function generateCoronerInvestigatorBBCode() {
+            const infoSources = document.getElementById('ci-info-sources').value;
+            const investigation = document.getElementById('ci-investigation').value;
+            const location = document.getElementById('ci-location').value;
+            const witnessStatements = document.getElementById('ci-witness-statements').value;
+            const sceneDescription = document.getElementById('ci-scene-description').value;
+            const evidence = document.getElementById('ci-evidence').value;
+            const bodyDescription = document.getElementById('ci-body-description').value;
+            const identification = document.getElementById('ci-identification').value;
+            const nextOfKin = document.getElementById('ci-next-of-kin').value;
+            const rankName = document.getElementById('ci-rank-name').value;
+
+            const bbcode = `
+[divbox=white][img]https://i.imgur.com/5K6R5rU.png[/img]
+
+
+
+[b][size=150]Rapor Detayları[/size][/b]
+[hr][/hr]
+
+[b]Bilgi Kaynakları:[/b]
+${infoSources}
+
+[b]Soruşturma:[/b]
+${investigation}
+
+[b]Lokasyon:[/b]
+${location}
+
+[b]Bilgilendiricilerin/Tanıkların İfadeleri:[/b]
+${witnessStatements}
+
+[b]Olay Yeri Betimlemesi:[/b]
+${sceneDescription}
+
+[b]Deliller:[/b]
+${evidence}
+
+[b]Beden Betimlemesi:[/b]
+${bodyDescription}
+
+[b]Kimlik Tespiti:[/b]
+${identification}
+
+[b]En Yakın Akraba Bildirisi:[/b]
+${nextOfKin}
+
+
+${rankName}
+
+[hr][/hr]
+[center][b]GİZLİLİK VE MAHREMİYET[/b][/center]
+
+[divbox=transparent][center][color=Black][size=85]Department of Medical Examiner-Coroner'den alınan bu belge, içinde yer alan bilgilerin gerçekliğini tasdik eder. Bu bilgilerin izinsiz dağıtımı veya kullanımı, Sağlık Sigortası Taşınabilirlik ve Sorumluluk Yasası'nın (HIPAA) yanı sıra San Andreas Tıbbi Bilgilerin Gizliliği Yasası (CMIA) ve San Andreas Bilgi Uygulamaları Yasası (IPA) dahil ancak bunlarla sınırlı olmamak üzere eyalet ve federal gizlilik yasalarını ihlal eder. Bu belgeyi ele alan tüm tarafların merhumun ve ailesinin mahremiyetine ve gizliliğine saygı duyması zorunludur. Bu yasaların herhangi bir şekilde ihlali, sorumlu taraflara karşı yasal işlem başlatılmasıyla sonuçlanabilir. Ek bilgi veya açıklamaya ihtiyaç duyulursa lütfen Department of Medical Examiner-Coroner ile iletişime geçin.[/size][/divbox]`;
+
+            const bbcodeOutput = document.getElementById('bbcode-output');
+            bbcodeOutput.value = bbcode.trim();
+
+            // Automatically copy the BBCode
+            bbcodeOutput.select();
+            document.execCommand('copy');
+
+            // Alert the user that the BBCode has been copied
+            alert("BBCode kopyalandı!");
+        }
+    </script>
+
+</body>
+</html>
